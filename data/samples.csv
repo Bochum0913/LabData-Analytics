@@ -1,0 +1,6 @@
+sample_id,sample_type,collected_at,status,result_value
+LAB-001,Blood,2026-11-10,completed,5.2
+LAB-002,Urine,2026-11-11,processing,
+LAB-003,Saliva,2026-11-12,received,
+LAB-004,Blood,2026-11-13,completed,4.8
+LAB-005,Swab,2026-11-14,processing,
