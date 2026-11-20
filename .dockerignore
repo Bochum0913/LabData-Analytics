@@ -1,0 +1,15 @@
+.git
+.github
+.venv
+__pycache__
+.pytest_cache
+.vscode
+.env
+.env.*
+*.db
+*.sqlite
+*.sqlite3
+*.pyc
+main_backup.py
+tests
+*.zip

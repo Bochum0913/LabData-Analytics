@@ -1,0 +1,13 @@
+services:
+  labdata-api:
+    build: .
+    ports:
+      - "127.0.0.1:8001:8000"
+    environment:
+      LABDATA_DB_PATH: /app/storage/labdata.db
+    volumes:
+      - labdata_sqlite:/app/storage
+    restart: unless-stopped
+
+volumes:
+  labdata_sqlite:
