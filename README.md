@@ -1,31 +1,144 @@
-# LabData Analytics — Starter (Phase 1)
+# LabData Analytics
 
-Python/FastAPI/Pandas portfolio project demonstrating **synthetic** laboratory CSV ingestion, basic validation, and sample query endpoints. No real patient information.
+[![Python Tests](https://github.com/Bochum0913/LabData-Analytics/actions/workflows/python-tests.yml/badge.svg)](https://github.com/Bochum0913/LabData-Analytics/actions/workflows/python-tests.yml)
 
-## Setup (Windows PowerShell)
+A Python-based laboratory sample management and data quality API built with **FastAPI, Pandas, SQLAlchemy, SQLite, Pytest, and Docker**. This portfolio project demonstrates laboratory sample tracking, structured data validation, transactional CSV imports, API testing, and containerized deployment.
+
+> **Educational demonstration only:** All provided sample records are synthetic. The application is not a clinical-grade LIMS and must not be used with real patient data.
+
+## Features
+
+- **Sample tracking:** Create, retrieve, filter, and update laboratory sample records.
+- **Persistent storage:** Store samples in SQLite through SQLAlchemy, with initial data seeded from a synthetic CSV file only when the database is empty.
+- **CSV batch imports:** Parse CSV files with Pandas and validate required fields, identifiers, dates, statuses, and numeric values before database insertion.
+- **Atomic validation:** Reject invalid or duplicate imports without partially writing the batch.
+- **Operational summaries:** Count samples by processing status.
+- **API documentation:** Test endpoints through FastAPI's interactive Swagger UI.
+- **Automated tests:** Run eight Pytest checks locally and through GitHub Actions.
+- **Docker deployment:** Launch the API with Docker Compose and retain SQLite data in a named volume.
+
+## Technology stack
+
+| Area | Tools |
+| --- | --- |
+| API | Python, FastAPI, Pydantic |
+| Data processing | Pandas |
+| Persistence | SQLAlchemy, SQLite |
+| Testing | Pytest, HTTPX |
+| Automation | GitHub Actions |
+| Deployment | Docker, Docker Compose |
+
+## Quick start with Docker
+
+**Prerequisite:** Docker Desktop or another Docker Engine with Compose support.
+
+```bash
+git clone https://github.com/Bochum0913/LabData-Analytics.git
+cd LabData-Analytics
+docker compose up --build -d
+```
+
+Open **http://127.0.0.1:8001/docs** to explore the API.
+
+```bash
+docker compose ps
+docker compose logs -f
+docker compose down
+```
+
+Docker Compose maps host port **8001** to container port **8000** and stores the SQLite database in a named Docker volume. `docker compose down` retains the data; `docker compose down -v` removes the volume and can erase stored records.
+
+## Run locally (Windows PowerShell)
+
+**Prerequisite:** Python 3.11+.
 
 ```powershell
-cd .\LabData-Analytics-Starter
-py --version
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m uvicorn main:app --reload
 ```
 
-If `py` is not recognized, install Python 3.11+ from python.org, enable Python launcher, and open a new PowerShell window.
+Open **http://127.0.0.1:8000/docs**. The local SQLite file is created under `data/` and is excluded from Git.
 
-Open **http://127.0.0.1:8000/docs** and try:
+## API endpoints
 
-- `GET /` (health greeting)
-- `GET /samples` (all five records)
-- `GET /samples?status=completed` (filtered)
-- `GET /samples/LAB-001` (one sample)
-- `GET /summary` (counts by status)
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/` | API information |
+| GET | `/samples` | List samples, optionally filter by `status` |
+| GET | `/samples/{sample_id}` | Retrieve one sample |
+| POST | `/samples` | Create a sample |
+| PATCH | `/samples/{sample_id}` | Update sample status or result |
+| GET | `/summary` | Counts by sample status |
+| POST | `/samples/import-csv` | Upload and validate a CSV batch |
 
-**Data is read from a CSV on every request.** Persistence/import uploads, SQLite, tests, Docker, and GitHub Actions will be added in later phases.
+### Example: create a sample
 
-## CSV schema
+`POST /samples`
 
-`sample_id,sample_type,collected_at,status,result_value`
+```json
+{
+  "sample_id": "LAB-009",
+  "sample_type": "Urine",
+  "collected_at": "2026-11-19",
+  "status": "received",
+  "result_value": null
+}
+```
 
-Allowed statuses: `received`, `processing`, `completed`. Missing results are allowed for unfinished tests.
+Supported statuses: `received`, `processing`, and `completed`.
+
+### Example: update a sample
+
+`PATCH /samples/LAB-009`
+
+```json
+{
+  "status": "completed",
+  "result_value": 5.8
+}
+```
+
+### CSV import format
+
+Required headers:
+
+```csv
+sample_id,sample_type,collected_at,status,result_value
+LAB-010,Blood,2026-11-19,received,
+LAB-011,Urine,2026-11-19,completed,5.4
+```
+
+Use the `/samples/import-csv` endpoint in Swagger UI. Uploads must be UTF-8 CSV files, no larger than **1 MiB** or **500 data rows** per import. Duplicate sample IDs and invalid values are rejected with helpful error responses; a failed batch is not partially imported.
+
+## Tests and continuous integration
+
+Install development dependencies and run tests:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+GitHub Actions runs the Python tests for pushes and pull requests. Check the [workflow results](https://github.com/Bochum0913/LabData-Analytics/actions).
+
+## Project structure
+
+```text
+LabData-Analytics/
+├── .github/workflows/python-tests.yml
+├── data/samples.csv
+├── tests/
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── compose.yaml
+├── main.py
+├── README.md
+├── requirements.txt
+└── requirements-dev.txt
+```
+
+## Scope and limitations
+
+This is a portfolio project built to practice Python backend development and laboratory informatics concepts. It uses **synthetic data only** and does not provide production access control, audit trails, regulatory validation, or clinical interoperability certification.
