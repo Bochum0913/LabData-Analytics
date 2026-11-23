@@ -142,3 +142,55 @@ LabData-Analytics/
 ## Scope and limitations
 
 This is a portfolio project built to practice Python backend development and laboratory informatics concepts. It uses **synthetic data only** and does not provide production access control, audit trails, regulatory validation, or clinical interoperability certification.
+
+## Power BI — Sample Operations Dashboard
+
+An interactive Power BI dashboard built as an extension of my LabData Analytics portfolio project, demonstrating data transformation, visualization, DAX measures, and data quality validation.
+
+### Dashboard Preview
+
+![LabData Analytics Dashboard](PowerBI/dashboard-preview.png)
+
+### Key Features
+
+- **Sample Monitoring:** Track total, completed, and pending samples.
+- **Completion Rate:** Calculate sample processing performance using DAX.
+- **Monthly Trends:** Analyze sample volume across 2025–2026.
+- **Sample Type Analysis:** Compare Blood, Urine, Saliva, and Swab categories.
+- **Status Distribution:** Visualize completed, processing, and received samples.
+- **Interactive Filtering:** Filter reports by sample type and collection date.
+- **Data Quality Validation:** Identify inconsistent records where completed samples lack results or incomplete samples contain results.
+
+### Dataset
+
+The dashboard uses **5,000 synthetic laboratory sample records** created solely for demonstration purposes.
+
+No real patient information or clinical data is included. The dataset is not intended for medical interpretation.
+
+### Technologies
+
+- Microsoft Power BI Desktop
+- Power Query
+- DAX
+- CSV data preparation and validation
+
+### Example Results
+
+| Metric | Value |
+|---|---:|
+| Total Samples | 5,000 |
+| Completed Samples | 3,773 |
+| Pending Samples | 1,227 |
+| Completion Rate | 75.46% |
+| Data Quality Issues | 0 |
+
+The final collection month is incomplete and should not be interpreted as a full-month decline in sample volume.
+
+### How to Open
+
+1. Download `PowerBI/LabData_Analytics_Dashboard.pbix`.
+2. Open it using Microsoft Power BI Desktop.
+3. Use the sample type and date range slicers to explore the dashboard.
+4. To refresh the source data, update the CSV file path in Power Query if necessary.
+
+**Note:** This is an independent portfolio demonstration, not a production healthcare reporting system.
